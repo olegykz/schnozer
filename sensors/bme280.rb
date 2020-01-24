@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require 'i2c'
+require 'timeout'
 
 class Bme280 < I2CDevice
   SENSOR_DEFAULT_ADDRESS = 0x76
+  READ_TIMEOUT_SECONDS = 1
 
   attr_reader :temp, :pressure, :humidity, :logger
 
@@ -20,7 +22,7 @@ class Bme280 < I2CDevice
   end
 
   def data
-    update
+    Timeout.timeout(READ_TIMEOUT_SECONDS) { update }
 
     {
       temperature: temp,

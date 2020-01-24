@@ -2,11 +2,13 @@
 
 require 'serialport'
 require 'logger'
+require 'timeout'
 
 class MhZ19B
   STARTING_BYTE = 0xff
   CMD_GAS_CONCENTRATION = 0x86
   DEFAULT_IO = '/dev/serial0'
+  READ_TIMEOUT_SECONDS = 1
 
   class GenericException < RuntimeError; end
   class InvalidPacketException < GenericException; end
@@ -25,7 +27,7 @@ class MhZ19B
 
   def data
     send_read_command
-    packet = read_response
+    packet = Timeout.timeout(READ_TIMEOUT_SECONDS) { read_response }
 
     {
       concentration: (packet[2] << 8) | packet[3],

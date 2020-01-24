@@ -29,7 +29,7 @@ threads << Thread.new(mh_z19b_data) do |result|
       fields: MedianFilter.collect_filtered(logger: logger) { mh_z19b.data }
     )
 
-    logger.debug("MH-Z19B data: #{mh_z19b_data}")
+    logger.info("MH-Z19B data: #{mh_z19b_data}")
   ensure
     mh_z19b&.close
   end
@@ -42,7 +42,7 @@ threads << Thread.new(bme280_data) do |result|
     fields: MedianFilter.collect_filtered(logger: logger) { bme280.data }
   )
 
-  logger.debug("BME280 data: #{bme280_data}")
+  logger.info("BME280 data: #{bme280_data}")
 end
 
 threads.map(&:join)
@@ -55,8 +55,8 @@ client = InfluxDB2::Client.new(
   precision: InfluxDB2::WritePrecision::SECOND
 )
 
-# write_api = client.create_write_api
-# logger.debug 'Sending data to Influx...'
-# write_api.write(data: [bme280_data, mh_z19b_data]).tap do |result|
-#   logger.debug "Result: #{result}"
-# end
+write_api = client.create_write_api
+logger.debug 'Sending data to Influx...'
+write_api.write(data: [bme280_data, mh_z19b_data]).tap do |result|
+  logger.debug "Result: #{result}"
+end

@@ -16,12 +16,11 @@ module MedianFilter
       Timeout.timeout(period) do
         loop do
           logger.debug "Collecting #{n += 1} sample"
-          value = yield
+          result = yield
           logger.debug "Got #{value}"
 
-          value.each do |field, value|
-            data[field] ||= []
-            data[field] << value
+          result.each do |field, value|
+            (data[field] ||= []) << value
           end
 
           logger.debug "Sleeping #{delay} seconds"
@@ -34,6 +33,10 @@ module MedianFilter
 
     data.keys.each_with_object({}) do |field, memo|
       logger.debug "Got #{data[field].size} samples for #{field}: #{data[field].sort}"
+
+      # Let's keep first value as unfiltered
+      memo[field] = data[field].first
+
       memo["#{field}_filtered_median"] = data[field].median
       memo["#{field}_filtered_avg"] = data[field].sum / data[field].size.to_f
     end
