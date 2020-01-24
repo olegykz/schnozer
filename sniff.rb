@@ -1,11 +1,10 @@
 require 'rubygems'
 require 'bundler/setup'
-require 'pry'
 require 'dotenv/load'
 require 'influxdb2/client'
 
-require_relative 'mh_z19b.rb'
-require_relative 'bme280.rb'
+require_relative 'sensors/mh_z19b'
+require_relative 'sensors/bme280'
 
 mh_z19b_data = nil
 bme280_data = nil
