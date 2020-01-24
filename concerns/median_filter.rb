@@ -17,7 +17,7 @@ module MedianFilter
         loop do
           logger.debug "Collecting #{n += 1} sample"
           result = yield
-          logger.debug "Got #{value}"
+          logger.debug "Got #{result}"
 
           result.each do |field, value|
             (data[field] ||= []) << value
