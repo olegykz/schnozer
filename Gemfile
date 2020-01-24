@@ -4,3 +4,4 @@ gem 'influxdb-client' #, git: 'https://github.com/influxdata/influxdb-client-rub
 gem 'i2c-devices'
 gem 'serialport'
 gem 'dotenv'
+gem 'descriptive_statistics'

@@ -23,12 +23,9 @@ class Bme280 < I2CDevice
     update
 
     {
-      name: 'bme280',
-      fields: {
-        temperature: temp,
-        pressure: pressure,
-        humidity: humidity
-      }
+      temperature: temp,
+      pressure: pressure,
+      humidity: humidity
     }
   end
 

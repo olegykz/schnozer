@@ -28,12 +28,9 @@ class MhZ19B
     packet = read_response
 
     {
-      name: 'mh_z19b',
-      fields: {
-        concentration: (packet[2] << 8) | packet[3],
-        temperature: (packet[4] - 40),
-        status: packet[5]
-      }
+      concentration: (packet[2] << 8) | packet[3],
+      temperature: (packet[4] - 40),
+      status: packet[5]
     }
   end
 
