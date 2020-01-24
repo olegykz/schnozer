@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'descriptive_statistics'
-
 module MedianFilter
   extend self
 
