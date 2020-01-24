@@ -2,18 +2,22 @@
 
 require 'serialport'
 require 'logger'
+require 'timeout'
 
 class MhZ19B
   STARTING_BYTE = 0xff
   CMD_GAS_CONCENTRATION = 0x86
+  DEFAULT_IO = '/dev/serial0'
+  READ_TIMEOUT_SECONDS = 1
 
   class GenericException < RuntimeError; end
   class InvalidPacketException < GenericException; end
 
-  attr_reader :io
+  attr_reader :io, :logger
 
-  def initialize(io = '/dev/serial0', sensor_id: 0x01)
+  def initialize(io: DEFAULT_IO, sensor_id: 0x01, logger: Logger.new(STDOUT))
     @io = io.is_a?(String) ? build_serial_port(io) : io
+    @logger = logger
     @sensor_id = sensor_id
   end
 
@@ -21,29 +25,18 @@ class MhZ19B
     io.close
   end
 
-  def concentration
-    data[:concentration]
-  end
-
   def data
     send_read_command
-    packet = read_response
+    packet = Timeout.timeout(READ_TIMEOUT_SECONDS) { read_response }
 
     {
-      name: 'mh_z19b',
-      fields: {
-        concentration: (packet[2] << 8) | packet[3],
-        temperature: (packet[4] - 40),
-        status: packet[5]
-      }
+      concentration: (packet[2] << 8) | packet[3],
+      temperature: (packet[4] - 40),
+      status: packet[5]
     }
   end
 
   private
-
-  def logger
-    @logger ||= Logger.new(STDOUT)
-  end
 
   def send_read_command
     packet = [STARTING_BYTE, @sensor_id, CMD_GAS_CONCENTRATION, 0, 0, 0, 0, 0, 0]
@@ -94,4 +87,3 @@ class MhZ19B
     0xff - sum + 1
   end
 end
-
