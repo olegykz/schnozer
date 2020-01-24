@@ -44,6 +44,9 @@ class MhZ19B
   def disable_abc
     # parameter: 0xA0 to enable ABC
     sensor_send(command: CMD_ABC_CHECK, parameter: 0)
+
+    sleep(0.1)
+    io.flush
   end
 
   def sensor_send(command:, parameter: 0)
