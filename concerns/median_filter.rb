@@ -37,8 +37,14 @@ module MedianFilter
       # Let's keep first value as unfiltered
       memo[field.to_s] = data[field].first
 
-      memo["#{field}_filtered_median"] = data[field].median
+      memo["#{field}_filtered_median"] = median(data[field])
       memo["#{field}_filtered_avg"] = data[field].sum / data[field].size.to_f
     end
+  end
+
+  def median(array)
+    sorted = array.sort
+    len = sorted.length
+    (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
   end
 end
