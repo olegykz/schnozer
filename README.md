@@ -8,6 +8,9 @@ Raspberry-PI-based solution to analyze the air quality (CO2, temperature, humidi
 * For humidity, temperature and pressure data I'm using BME280 sensor
 * CO2 :biohazard: concentration data is provided by MH-Z19B sensor 
 
+# Wiring
+TODO
+
 # Data utilization :bar_chart:
 Obtained values are reported to shared influxDb instance (https://www.influxdata.com/)
 
