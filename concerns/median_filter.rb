@@ -35,7 +35,7 @@ module MedianFilter
       logger.debug "Got #{data[field].size} samples for #{field}: #{data[field].sort}"
 
       # Let's keep first value as unfiltered
-      memo[field] = data[field].first
+      memo[field.to_s] = data[field].first
 
       memo["#{field}_filtered_median"] = data[field].median
       memo["#{field}_filtered_avg"] = data[field].sum / data[field].size.to_f
