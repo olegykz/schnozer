@@ -10,6 +10,8 @@ require_relative 'bme280.rb'
 mh_z19b_data = nil
 bme280_data = nil
 
+Dotenv.require_keys('INFLUX_HOST', 'INFLUX_ORGANIZATION', 'INFLUX_BUCKET', 'INFLUX_TOKEN')
+
 begin
   mh_z19b = MhZ19B.new
   mh_z19b_data = mh_z19b.data
