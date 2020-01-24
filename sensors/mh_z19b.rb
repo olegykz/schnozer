@@ -6,23 +6,21 @@ require 'logger'
 class MhZ19B
   STARTING_BYTE = 0xff
   CMD_GAS_CONCENTRATION = 0x86
+  DEFAULT_IO = '/dev/serial0'
 
   class GenericException < RuntimeError; end
   class InvalidPacketException < GenericException; end
 
-  attr_reader :io
+  attr_reader :io, :logger
 
-  def initialize(io = '/dev/serial0', sensor_id: 0x01)
+  def initialize(io: DEFAULT_IO, sensor_id: 0x01, logger: Logger.new(STDOUT))
     @io = io.is_a?(String) ? build_serial_port(io) : io
+    @logger = logger
     @sensor_id = sensor_id
   end
 
   def close
     io.close
-  end
-
-  def concentration
-    data[:concentration]
   end
 
   def data
@@ -40,10 +38,6 @@ class MhZ19B
   end
 
   private
-
-  def logger
-    @logger ||= Logger.new(STDOUT)
-  end
 
   def send_read_command
     packet = [STARTING_BYTE, @sensor_id, CMD_GAS_CONCENTRATION, 0, 0, 0, 0, 0, 0]
@@ -94,4 +88,3 @@ class MhZ19B
     0xff - sum + 1
   end
 end
-
