@@ -7,3 +7,7 @@ Raspberry-PI-based solution to analyze the air quiality (CO2, temperature, humid
 
 # Data utilization
 Obtained values are reported to shared influxDb instance (https://www.influxdata.com/)
+
+# Credits
+* BME280 code is based on https://github.com/kochka/ruby_rpi_components
+* MH-Z19B code is based on https://github.com/cho45/ruby-mh-z19
