@@ -62,6 +62,7 @@ class MhZ19B
 
   def get_abc_mode
     sensor_send(command: COMMANDS[:get_abc_mode])
+    abc_enabled = sensor_read[7] == 1
 
     logger.debug "Get ABC mode: #{abc_enabled}"
     abc_enabled

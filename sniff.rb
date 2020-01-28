@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'bundler/setup'
+require 'dotenv/load'
 require 'influxdb2/client'
 
 Bundler.require(:default)
