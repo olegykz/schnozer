@@ -62,7 +62,7 @@ class MhZ19B
     sensor_send(command: COMMANDS[:zero_point_calibration])
   end
 
-  def get_abc_setting
+  def get_abc_settings
     sensor_send(command: COMMANDS[:get_abc_settings])
     packet = sensor_read
 
