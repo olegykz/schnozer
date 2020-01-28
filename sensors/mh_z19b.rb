@@ -54,7 +54,7 @@ class MhZ19B
   def check_abc
     return true if @abc_disabled
 
-    disable_abc if get_abc_settings[:abc_mode]
+    set_abc_mode(false) if get_abc_settings[:abc_mode]
     @abc_disabled = !get_abc_settings[:abc_mode]
   end
 
@@ -62,20 +62,16 @@ class MhZ19B
     sensor_send(command: COMMANDS[:zero_point_calibration])
   end
 
-  def get_abc_settings
-    sensor_send(command: COMMANDS[:get_abc_settings])
+  def get_abc_mode
+    sensor_send(command: COMMANDS[:get_abc_mode])
     packet = sensor_read
 
     { abc_mode: sensor_read[7] == 1}
   end
 
-  def enable_abc
-    sensor_send(command: COMMANDS[:set_abc_mode], parameter: 0xA0)
-    sensor_read
-  end
-
-  def disable_abc
-    sensor_send(command: COMMANDS[:set_abc_mode])
+  def set_abc_mode(enabled)
+    parameter = enabled ? 0x0A : 0
+    sensor_send(command: COMMANDS[:set_abc_mode], parameter: parameter)
     sensor_read
   end
 
