@@ -5,9 +5,14 @@ require 'logger'
 require 'timeout'
 
 class MhZ19B
-  STARTING_BYTE = 0xFF
+  STARTING_BYTE         = 0xFF
+
   CMD_GAS_CONCENTRATION = 0x86
-  CMD_ABC_CHECK = 0x79
+  CMD_ABC_SET           = 0x79
+  CMD_ABC_GET_SETTING   = 0x7D
+  CMD_MCU_RESET         = 0x8D
+  CMD_CHANGE_RANGE      = 0x99 # TODO: write command
+
   DEFAULT_IO = '/dev/serial0'
   READ_TIMEOUT_SECONDS = 1
 
@@ -30,7 +35,7 @@ class MhZ19B
 
   def data
     sensor_send(command: CMD_GAS_CONCENTRATION)
-    packet = Timeout.timeout(READ_TIMEOUT_SECONDS) { sensor_read }
+    packet = sensor_read
 
     {
       concentration: (packet[2] << 8) | packet[3],
@@ -41,9 +46,24 @@ class MhZ19B
 
   private
 
-  def disable_abc
+  def get_abc_setting
     # parameter: 0xA0 to enable ABC
-    sensor_send(command: CMD_ABC_CHECK, parameter: 0)
+    sensor_send(command: CMD_ABC_GET_SETTING)
+    sensor_read
+  end
+
+  def enable_abc
+    sensor_send(command: CMD_ABC_SET, parameter: 0xA0)
+    sensor_read
+  end
+
+  def disable_abc
+    sensor_send(command: CMD_ABC_SET)
+    sensor_read
+  end
+
+  def reset_mcu
+    sensor_send(command: CMD_MCU_RESET)
     sensor_read
   end
 
@@ -58,7 +78,7 @@ class MhZ19B
 
   def sensor_read
     logger.debug 'Reading 9 bytes...'
-    raw_packet = io.read(9)
+    raw_packet = Timeout.timeout(READ_TIMEOUT_SECONDS) { io.read(9 }
     raise InvalidPacketException, 'empty response' if raw_packet.nil?
 
     unpacked = raw_packet.unpack('C*')
