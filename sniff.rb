@@ -2,8 +2,9 @@
 
 require 'rubygems'
 require 'bundler/setup'
-require 'dotenv/load'
 require 'influxdb2/client'
+
+Bundler.require(:default)
 
 require_relative 'sensors/mh_z19b'
 require_relative 'sensors/bme280'
@@ -29,7 +30,6 @@ threads << Thread.new(mh_z19b_data) do |result|
       fields: mh_z19b.data
     )
 
-    puts mh_z19b_data
     logger.info("MH-Z19B data: #{mh_z19b_data}")
   ensure
     mh_z19b&.close
@@ -46,7 +46,7 @@ threads << Thread.new(bme280_data) do |result|
   logger.info("BME280 data: #{bme280_data}")
 end
 
-Timeout.timeout(10) { threads.map(&:join) }
+threads.map(&:join)
 
 client = InfluxDB2::Client.new(
   ENV['INFLUX_HOST'],
