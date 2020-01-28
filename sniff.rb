@@ -61,3 +61,5 @@ logger.debug 'Sending data to Influx...'
 write_api.write(data: [bme280_data, mh_z19b_data]).tap do |result|
   logger.debug "Result: #{result}"
 end
+
+binding.pry if ENV['INTERACTIVE'] == 'pry'
