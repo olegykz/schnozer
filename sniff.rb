@@ -26,9 +26,10 @@ threads << Thread.new(mh_z19b_data) do |result|
     mh_z19b = MhZ19B.new(logger: logger)
     result.merge!(
       name: 'mh_z19b',
-      fields: MedianFilter.collect_filtered(logger: logger) { mh_z19b.data }
+      fields: mh_z19b.data
     )
 
+    puts mh_z19b_data
     logger.info("MH-Z19B data: #{mh_z19b_data}")
   ensure
     mh_z19b&.close
@@ -39,13 +40,13 @@ threads << Thread.new(bme280_data) do |result|
   bme280 = Bme280.new(logger: logger)
   result.merge!(
     name: 'bme280',
-    fields: MedianFilter.collect_filtered(logger: logger) { bme280.data }
+    fields: bme280.data
   )
 
   logger.info("BME280 data: #{bme280_data}")
 end
 
-threads.map(&:join)
+Timeout.timeout(10) { threads.map(&:join) }
 
 client = InfluxDB2::Client.new(
   ENV['INFLUX_HOST'],
