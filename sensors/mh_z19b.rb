@@ -54,8 +54,8 @@ class MhZ19B
   def check_abc
     return true if @abc_disabled
 
-    set_abc_mode(false) if get_abc_settings[:abc_mode]
-    @abc_disabled = !get_abc_settings[:abc_mode]
+    set_abc_mode(false) if get_abc_mode
+    @abc_disabled = !get_abc_mode
   end
 
   def zero_point_calibration
@@ -66,7 +66,7 @@ class MhZ19B
     sensor_send(command: COMMANDS[:get_abc_mode])
     packet = sensor_read
 
-    { abc_mode: sensor_read[7] == 1}
+    sensor_read[7] == 1
   end
 
   def set_abc_mode(enabled)
