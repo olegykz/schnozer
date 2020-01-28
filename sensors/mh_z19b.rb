@@ -78,7 +78,7 @@ class MhZ19B
 
   def sensor_read
     logger.debug 'Reading 9 bytes...'
-    raw_packet = Timeout.timeout(READ_TIMEOUT_SECONDS) { io.read(9 }
+    raw_packet = Timeout.timeout(READ_TIMEOUT_SECONDS) { io.read(9) }
     raise InvalidPacketException, 'empty response' if raw_packet.nil?
 
     unpacked = raw_packet.unpack('C*')
