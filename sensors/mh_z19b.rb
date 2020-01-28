@@ -7,11 +7,14 @@ require 'timeout'
 class MhZ19B
   STARTING_BYTE         = 0xFF
 
-  CMD_GAS_CONCENTRATION = 0x86
-  CMD_ABC_SET           = 0x79
-  CMD_ABC_GET_SETTING   = 0x7D
-  CMD_MCU_RESET         = 0x8D
-  CMD_CHANGE_RANGE      = 0x99 # TODO: write command
+  COMMANDS = {
+    get_co2_concentration:  0x86,
+    set_abc_mode:           0x79,
+    get_abc_mode:           0x7D,
+    mcu_reset:              0x8D,
+    zero_point_calibration: 0x87,
+    range_change:           0x99
+  }.freeze
 
   DEFAULT_IO = '/dev/serial0'
   READ_TIMEOUT_SECONDS = 1
@@ -26,7 +29,7 @@ class MhZ19B
     @logger = logger
     @sensor_id = sensor_id
 
-    disable_abc
+
   end
 
   def close
@@ -34,7 +37,9 @@ class MhZ19B
   end
 
   def data
-    sensor_send(command: CMD_GAS_CONCENTRATION)
+    check_abc
+
+    sensor_send(command: COMMANDS[:get_co2_concentration])
     packet = sensor_read
 
     {
@@ -46,25 +51,36 @@ class MhZ19B
 
   private
 
+  def check_abc
+    return true if @abc_disabled
+
+    disable_abc if get_abc_settings[:abc_mode]
+    @abc_disabled = !get_abc_settings[:abc_mode]
+  end
+
+  def zero_point_calibration
+    sensor_send(command: COMMANDS[:zero_point_calibration])
+  end
+
   def get_abc_setting
-    # parameter: 0xA0 to enable ABC
-    sensor_send(command: CMD_ABC_GET_SETTING)
-    sensor_read
+    sensor_send(command: COMMANDS[:get_abc_settings])
+    packet = sensor_read
+
+    { abc_mode: sensor_read[7] == 1}
   end
 
   def enable_abc
-    sensor_send(command: CMD_ABC_SET, parameter: 0xA0)
+    sensor_send(command: COMMANDS[:set_abc_mode], parameter: 0xA0)
     sensor_read
   end
 
   def disable_abc
-    sensor_send(command: CMD_ABC_SET)
+    sensor_send(command: COMMANDS[:set_abc_mode])
     sensor_read
   end
 
   def reset_mcu
-    sensor_send(command: CMD_MCU_RESET)
-    sensor_read
+    sensor_send(command: COMMANDS[:mcu_reset])
   end
 
   def sensor_send(command:, parameter: 0)
