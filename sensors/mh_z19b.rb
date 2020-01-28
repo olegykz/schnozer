@@ -50,9 +50,9 @@ class MhZ19B
   private
 
   def check_abc
-    return true if @abc_disabled
+    return true if @abc_disabled ||= !get_abc_mode
 
-    set_abc_mode(false) if get_abc_mode
+    set_abc_mode(false) unless @abc_disabled
     @abc_disabled = !get_abc_mode
   end
 
@@ -63,7 +63,8 @@ class MhZ19B
   def get_abc_mode
     sensor_send(command: COMMANDS[:get_abc_mode])
 
-    sensor_read[7] == 1
+    logger.debug "Get ABC mode: #{abc_enabled}"
+    abc_enabled
   end
 
   def set_abc_mode(enabled)
