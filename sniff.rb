@@ -50,7 +50,7 @@ threads.map(&:join)
 
 influxdb = InfluxDB::Client.new url: ENV['INFLUX_URL'], verify_ssl: false
 [bme280_data, mh_z19b_data].each do |datum|
-  influxdb.write_point datum[:name], datum[:fields]
+  influxdb.write_point datum[:name], { values: datum[:fields] }
 end
 
 binding.pry if ENV['INTERACTIVE'] == 'pry'
