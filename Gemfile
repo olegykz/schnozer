@@ -4,6 +4,6 @@ source 'https://rubygems.org'
 
 gem 'dotenv'
 gem 'i2c-devices'
-gem 'influxdb-client'
+gem 'influxdb'
 gem 'pry'
 gem 'serialport'

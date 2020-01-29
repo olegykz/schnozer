@@ -3,7 +3,6 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'dotenv/load'
-require 'influxdb2/client'
 
 Bundler.require(:default)
 
@@ -11,7 +10,7 @@ require_relative 'sensors/mh_z19b'
 require_relative 'sensors/bme280'
 require_relative 'concerns/median_filter'
 
-Dotenv.require_keys('INFLUX_HOST', 'INFLUX_ORGANIZATION', 'INFLUX_BUCKET', 'INFLUX_TOKEN')
+Dotenv.require_keys('INFLUX_URL')
 
 LOGFILES_COUNT = 5
 LOGFILE_SIZE = 1_024_000
@@ -49,18 +48,9 @@ end
 
 threads.map(&:join)
 
-client = InfluxDB2::Client.new(
-  ENV['INFLUX_HOST'],
-  ENV['INFLUX_TOKEN'],
-  org: ENV['INFLUX_ORGANIZATION'],
-  bucket: ENV['INFLUX_BUCKET'],
-  precision: InfluxDB2::WritePrecision::SECOND
-)
-
-write_api = client.create_write_api
-logger.debug 'Sending data to Influx...'
-write_api.write(data: [bme280_data, mh_z19b_data]).tap do |result|
-  logger.debug "Result: #{result}"
+influxdb = InfluxDB::Client.new url: ENV['INFLUX_URL'], verify_ssl: false
+[bme280_data, mh_z19b_data].each do |datum|
+  influxdb.write_point datum[:name], datum[:fields]
 end
 
 binding.pry if ENV['INTERACTIVE'] == 'pry'
