@@ -49,11 +49,13 @@ end
 threads.map(&:join)
 
 influxdb =
-  InfluxDB::Client.new
+  InfluxDB::Client.new(
+    ENV['INFLUXDB_DATABASE'],
     url: ENV['INFLUXDB_SERVER'],
     user: ENV['INFLUXDB_USER'],
     password: ENV['INFLUXDB_PASSWORD'],
     verify_ssl: false
+  )
 
 p influxdb.write_points([bme280_data, mh_z19b_data]).inspect
 binding.pry if ENV['INTERACTIVE'] == 'pry'
