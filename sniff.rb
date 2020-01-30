@@ -26,8 +26,8 @@ threads << Thread.new(mh_z19b_data) do |result|
   begin
     mh_z19b = MhZ19B.new(logger: logger)
     result.merge!(
-      name: 'mh_z19b',
-      fields: mh_z19b.data
+      series: 'mh_z19b',
+      values: mh_z19b.data
     )
 
     logger.info("MH-Z19B data: #{mh_z19b_data}")
@@ -39,8 +39,8 @@ end
 threads << Thread.new(bme280_data) do |result|
   bme280 = Bme280.new(logger: logger)
   result.merge!(
-    name: 'bme280',
-    fields: bme280.data
+    series: 'bme280',
+    values: bme280.data
   )
 
   logger.info("BME280 data: #{bme280_data}")
@@ -55,8 +55,5 @@ influxdb =
     password: ENV['INFLUXDB_PASSWORD'],
     verify_ssl: false
 
-[bme280_data, mh_z19b_data].each do |datum|
-  influxdb.write_point datum[:name], { values: datum[:fields] }
-end
-
+p influxdb.write_points([bme280_data, mh_z19b_data]).inspect
 binding.pry if ENV['INTERACTIVE'] == 'pry'
