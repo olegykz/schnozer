@@ -48,7 +48,13 @@ end
 
 threads.map(&:join)
 
-influxdb = InfluxDB::Client.new url: ENV['INFLUX_URL'], verify_ssl: false
+influxdb =
+  InfluxDB::Client.new
+    url: ENV['INFLUXDB_SERVER'],
+    user: ENV['INFLUXDB_USER'],
+    password: ENV['INFLUXDB_PASSWORD'],
+    verify_ssl: false
+
 [bme280_data, mh_z19b_data].each do |datum|
   influxdb.write_point datum[:name], { values: datum[:fields] }
 end
