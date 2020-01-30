@@ -54,7 +54,8 @@ influxdb =
     url: ENV['INFLUXDB_SERVER'],
     user: ENV['INFLUXDB_USER'],
     password: ENV['INFLUXDB_PASSWORD'],
-    verify_ssl: false
+    verify_ssl: false,
+    auth_method: ENV['INFLUXDB_AUTH']
   )
 
 p influxdb.write_points([bme280_data, mh_z19b_data]).inspect
