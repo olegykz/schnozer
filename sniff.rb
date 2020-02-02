@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 require 'rubygems'
@@ -9,8 +10,6 @@ Bundler.require(:default)
 require_relative 'sensors/mh_z19b'
 require_relative 'sensors/bme280'
 require_relative 'concerns/median_filter'
-
-Dotenv.require_keys('INFLUX_URL')
 
 LOGFILES_COUNT = 5
 LOGFILE_SIZE = 1_024_000
@@ -48,15 +47,7 @@ end
 
 threads.map(&:join)
 
-influxdb =
-  InfluxDB::Client.new(
-    ENV['INFLUXDB_DATABASE'],
-    url: ENV['INFLUXDB_SERVER'],
-    user: ENV['INFLUXDB_USER'],
-    password: ENV['INFLUXDB_PASSWORD'],
-    verify_ssl: false,
-    auth_method: ENV['INFLUXDB_AUTH']
-  )
-
-p influxdb.write_points([bme280_data, mh_z19b_data]).inspect
 binding.pry if ENV['INTERACTIVE'] == 'pry'
+
+telegraf = Telegraf::Agent.new 'udp://localhost:8094'
+telegraf.write([bme280_data, mh_z19b_data])

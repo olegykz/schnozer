@@ -2,8 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'dotenv'
 gem 'i2c-devices'
-gem 'influxdb'
 gem 'pry'
 gem 'serialport'
+gem 'telegraf'
