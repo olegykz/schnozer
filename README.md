@@ -5,8 +5,10 @@ Chronograf (https://github.com/influxdata/chronograf) on the screenshot above
 Raspberry-PI-based solution to analyze the air quality (CO2, temperature, humidity, pressure)
 
 # How it works :gear:
-* For humidity, temperature and pressure data I'm using BME280 sensor
-* CO2 :biohazard: concentration data is provided by MH-Z19B sensor
+* For humidity, temperature and pressure data I'm using BME280 sensor;
+* CO2 :biohazard: concentration data is provided by MH-Z19B sensor;
+* `sniff.rb` script execution sends single measurement to local Telegraf instance;
+* For continuos monitoring `sniff.rb` execution should be executed by external scheduling system (CRON, for instance)
 
 # Wiring
 TODO
