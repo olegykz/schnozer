@@ -1,6 +1,6 @@
 # Schnozer :nose:
 ![screenshot](screenshot.png)
-Chronograf (https://github.com/influxdata/chronograf) on the screenshot above
+Chronograf (https://github.com/influxdata/chronograf) on the screenshot above, can be viewed live on https://olegy.kz/
 
 Raspberry-PI-based solution to analyze the air quality (CO2, temperature, humidity, pressure)
 
