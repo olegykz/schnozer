@@ -1,6 +1,6 @@
 # Schnozer :nose:
 ![screenshot](screenshot.png)
-Chronograf (https://github.com/influxdata/chronograf) on the screenshot above, can be viewed live on https://olegy.kz/
+Grafana (https://github.com/grafana/grafana) on the screenshot above, can be viewed live on https://olegy.kz/
 
 Raspberry-PI-based solution to analyze the air quality (CO2, temperature, humidity, pressure)
 
@@ -10,15 +10,15 @@ Raspberry-PI-based solution to analyze the air quality (CO2, temperature, humidi
 * `sniff.rb` script execution sends single measurement to local Telegraf instance;
 * For continuos monitoring `sniff.rb` execution should be executed by external scheduling system (CRON, for instance)
 
-# Wiring
-TODO
+# Structure
+![structure](structure.png)
 
 # Data utilization :bar_chart:
 Obtained values are reported to the local Telegraf instance - then they could be utilized in
 according to Telegraf configuration file. In my case, I'm using InfluxDB as telegraf output and
-Chronograf as UI for InfluxDB
+Grafana as UI for InfluxDB
 
 # Credits :clap:
 * BME280 code is based on https://github.com/kochka/ruby_rpi_components
 * MH-Z19B code is based on https://github.com/cho45/ruby-mh-z19
-* Influxdata (https://github.com/influxdata/) for InfluxDB, Telegraf, Chronograf
+* Influxdata (https://github.com/influxdata/) for InfluxDB, Telegraf
