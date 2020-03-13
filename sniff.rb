@@ -3,12 +3,12 @@
 
 require 'rubygems'
 require 'bundler/setup'
+require 'json'
 
 Bundler.require(:default)
 
 require_relative 'sensors/mh_z19b'
 require_relative 'sensors/bme280'
-require_relative 'concerns/median_filter'
 
 LOGFILES_COUNT = 5
 LOGFILE_SIZE = 1_024_000
@@ -17,11 +17,8 @@ logger = Logger.new(ENV.fetch('LOG_FILE', STDOUT), LOGFILES_COUNT, LOGFILE_SIZE)
 logger.level = ENV.fetch('LOG_LEVEL', 'debug')
 
 
-wifi_ssid = `iwgetid -r`&.chomp
-if wifi_ssid.empty?
-  logger.fatal "No WiFi detected! iwgetid output: #{`iwgetid`}"
-  exit 1
-end
+wifi_ssid = `/sbin/iwgetid -r`&.chomp
+logger.debug "WiFi SSID: #{wifi_ssid}"
 
 base_data = { tags: { wifi_ssid: wifi_ssid } }
 mh_z19b_data = base_data.dup
@@ -53,6 +50,10 @@ threads << Thread.new(bme280_data) do |result|
 end
 
 threads.map(&:join)
+
+pipe_name = 'sniff.json'
+File.mkfifo(pipe_name) unless File.exists?(pipe_name)
+File.write(pipe_name, [bme280_data, mh_z19b_data].to_json + "\n", { mode: 'w+' })
 
 binding.pry if ENV['INTERACTIVE'] == 'pry'
 
