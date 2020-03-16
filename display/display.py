@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
         while True:
             my_now = datetime.datetime.now()
-            schema_name = "day" if 8 < my_now.hour < 19 else "night"
+            schema_name = "day" if 8 < my_now.hour < 23 else "night"
             schema = color_schema[schema_name]
 
             device.DrawStringBg(0, 0, my_now.strftime("%Y-%m-%d %H:%M"), schema["datetime"])
