@@ -15,17 +15,15 @@ if __name__ == '__main__':
     try:
         device.EnableDisplay(True)
         device.Clear()
-        while True:
+        
+        time.sleep(5)
+	while True:
             my_now = datetime.datetime.now()
             device.DrawStringBg(0, 0, my_now.strftime("%Y-%m-%d %H:%M"), SSD1331.COLOR_WHITE, SSD1331.COLOR_BLACK)
 
 	    data = ""
             with open("sniff.json", "r") as data_file:
             	data = json.loads(data_file.readlines()[-1])
-
-            if data == "":
-              sleep(1)
-              continue
 
             for line in data:
               if line['series'] == 'mh_z19b':
