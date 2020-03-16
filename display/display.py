@@ -58,7 +58,7 @@ if __name__ == '__main__':
             device.DrawStringBg(0, 55, ip_address, schema["ip_address"])
 
             if not data_loaded:
-              device.DrawStringBg(0, 30, "Waiting for data...")
+              device.DrawStringBg(0, 25, "Waiting for data", schema["datetime"])
 
             with open("sniff.json", "r") as data_file:
                 if not data_loaded:

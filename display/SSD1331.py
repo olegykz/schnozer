@@ -609,9 +609,9 @@ class SSD1331:
         self.EnableScrollMode(False)
         return
 
-SSD1331_PIN_CS  = 23
-SSD1331_PIN_DC  = 24
-SSD1331_PIN_RST = 25
+SSD1331_PIN_CS  = 8
+SSD1331_PIN_DC  = 23
+SSD1331_PIN_RST = 24
 
 if __name__ == '__main__':
     device = SSD1331(SSD1331_PIN_DC, SSD1331_PIN_RST, SSD1331_PIN_CS)
