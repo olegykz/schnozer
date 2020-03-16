@@ -442,7 +442,7 @@ class SSD1331:
             x = x + 6
         return
 
-    def DrawStringBg(self, x, y, str, c, bg = COLOR_BLACK):
+    def DrawStringBg(self, x, y, str, c = COLOR_WHITE, bg = COLOR_BLACK):
         self.DrawLine(x, y, x, y + 9, bg)
         x = x + 1
         for i in str:
