@@ -60,7 +60,7 @@ if __name__ == '__main__':
             if not data_loaded:
               device.DrawStringBg(0, 25, "Waiting for data", schema["datetime"])
 
-            with open("sniff.json", "r") as data_file:
+            with open("schnozer.out.json", "r") as data_file:
                 if not data_loaded:
                   device.Clear()
 
@@ -68,20 +68,20 @@ if __name__ == '__main__':
                 data_loaded = True
 
             for line in data:
-                if line['series'] == 'mh_z19b':
-                    ppm = line['values']['concentration']
+                if line['series'] == 'mh_z19b_f':
+                    ppm = line['concentration']
                     ppm_control = '{:>4} ppm'.format(ppm)
                     ppm_color = (ppm < 900 and schema["co2_low"]) or (ppm < 1500 and schema["co2_medium"]) or schema["co2_high"]
 
                     device.DrawStringBg(0, 15, ppm_control, ppm_color)
                 else:
-                    temp_control = '{:+04.2f} C'.format(line['values']['temperature'])
+                    temp_control = '{:+04.2f} C'.format(line['temperature'])
                     device.DrawStringBg(0, 25, temp_control, schema["temperature"])
 
-                    humidity_control = '{:4d} %H'.format(int(line['values']['humidity']))
+                    humidity_control = '{:4d} %H'.format(int(line['humidity']))
                     device.DrawStringBg(54, 15, humidity_control, schema["humidity"])
 
-                    pressure_control = '{:4d}hPa'.format(int(line['values']['pressure']))
+                    pressure_control = '{:4d}hPa'.format(int(line['pressure']))
                     device.DrawStringBg(54, 25, pressure_control, schema["pressure"])
     finally:
         device.EnableDisplay(False)

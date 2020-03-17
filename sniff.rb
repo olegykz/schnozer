@@ -29,7 +29,7 @@ threads << Thread.new(mh_z19b_data) do |result|
   begin
     mh_z19b = MhZ19B.new(logger: logger)
     result.merge!(
-      series: 'mh_z19b',
+      series: 'mh_z19b_f',
       values: mh_z19b.data,
     )
 
@@ -51,11 +51,12 @@ end
 
 threads.map(&:join)
 
-pipe_name = 'sniff.json'
-File.mkfifo(pipe_name) unless File.exists?(pipe_name)
-File.write(pipe_name, [bme280_data, mh_z19b_data].to_json + "\n", { mode: 'w+' })
-
 binding.pry if ENV['INTERACTIVE'] == 'pry'
 
-telegraf = Telegraf::Agent.new 'udp://localhost:8094'
-telegraf.write([bme280_data, mh_z19b_data])
+pipe_name = 'schnozer.out.json'
+File.mkfifo(pipe_name) unless File.exists?(pipe_name)
+
+[bme280_data, mh_z19b_data].map do |data|
+  new_structure = data.slice(:series).merge(data.delete(:tags))
+  new_structure.merge(data.delete(:values))
+end.tap { |data| File.write(pipe_name, data.to_json + "\n", { mode: 'w+' }) }
