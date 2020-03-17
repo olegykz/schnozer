@@ -39,6 +39,8 @@ color_schema = {
     }
 }
 
+state_dot = True
+
 if __name__ == '__main__':
     device = SSD1331.SSD1331(SSD1331_PIN_DC, SSD1331_PIN_RST, SSD1331_PIN_CS)
     data_loaded = False
@@ -52,6 +54,14 @@ if __name__ == '__main__':
             schema_name = "day" if 8 < my_now.hour < 23 else "night"
             schema = color_schema[schema_name]
 
+            if state_dot:
+		state_led_color = schema["co2_low"]
+                state_dot = False
+            else:
+                state_led_color = SSD1331.COLOR_BLACK
+                state_dot = True
+
+            device.DrawStringBg(0, 35, 'o', state_led_color)
             device.DrawStringBg(0, 0, my_now.strftime("%Y-%m-%d %H:%M"), schema["datetime"])
 
             ip_address = commands.getoutput('hostname -I')
@@ -63,8 +73,11 @@ if __name__ == '__main__':
             with open("schnozer.out.json", "r") as data_file:
                 if not data_loaded:
                   device.Clear()
+		data_lines = data_file.readlines()
+		if not data_lines:
+		  continue
 
-                data = json.loads(data_file.readlines()[-1])
+                data = json.loads(data_lines[-1])
                 data_loaded = True
 
             for line in data:

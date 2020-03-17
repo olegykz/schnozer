@@ -1,0 +1,3 @@
+#!/bin/bash
+python display/display.py &
+watch --interval 10 ./sniff.rb > /dev/null 2>&1 &
