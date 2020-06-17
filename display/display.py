@@ -65,6 +65,7 @@ if __name__ == '__main__':
             device.DrawStringBg(0, 0, my_now.strftime("%Y-%m-%d %H:%M"), schema["datetime"])
 
             ip_address = commands.getoutput('hostname -I')
+            ip_address = ip_address if len(ip_address.strip()) > 0 else 'No connection'
             device.DrawStringBg(0, 55, ip_address, schema["ip_address"])
 
             if not data_loaded:
