@@ -22,3 +22,5 @@ Grafana as UI for InfluxDB
 * BME280 code is based on https://github.com/kochka/ruby_rpi_components
 * MH-Z19B code is based on https://github.com/cho45/ruby-mh-z19
 * Influxdata (https://github.com/influxdata/) for InfluxDB, Telegraf
+
+![image](https://user-images.githubusercontent.com/688325/232794466-c733ca36-8df1-408c-9898-e46ef3d9e602.png)
